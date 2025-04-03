@@ -15,7 +15,6 @@ local font_2 = dxCreateFont('verdana.ttf', math.max(10, 12*scale)) or "default"
 local dxDrawText_ = dxDrawText
 local animationProgress = 0
 local animationDuration = 600
-local hideAnimationDuration = 1300
 local animationStartTime = nil
 local isHiding = false
 local hideAnimationStartTime = nil
@@ -65,7 +64,7 @@ function Map.Render()
     
     local progress
     if isHiding and hideAnimationStartTime then
-        progress = 1 - easeOutQuad(interpolateProgress(hideAnimationStartTime, hideAnimationDuration))
+        progress = 1 - easeOutQuad(interpolateProgress(hideAnimationStartTime, animationDuration))
         if progress <= 0 then
             Round.show = false
             isHiding = false
@@ -235,6 +234,10 @@ function getHexTeamColor(team)
     if not isElement(team) then return "#FFFFFF" end
     local r, g, b = getTeamColor(team)
     return string.format("#%.2X%.2X%.2X", math.floor(r), math.floor(g), math.floor(b)) end
+function dxDrawShadowText( text, x, y, t, r, color, scale, font, alignx, aligny, ... )
+	dxDrawText( text:gsub('#%x%x%x%x%x%x', ''), x+1, y+1, _,_, tocolor(0,0,0), scale, font, alignx, aligny, unpack({...})); 
+	return dxDrawText( text, x, y, _,_, color, scale, font, alignx, aligny, unpack({...})); 
+	end 
 
 addEvent('showTopRound', true)
 addEventHandler('showTopRound', root, function(show, p, teams, wintext, winner, previous)
@@ -261,16 +264,12 @@ addEventHandler('showTopRound', root, function(show, p, teams, wintext, winner, 
     Round.wintext = wintext or ""
 end)
 
-function dxDrawShadowText( text, x, y, t, r, color, scale, font, alignx, aligny, ... )
-dxDrawText( text:gsub('#%x%x%x%x%x%x', ''), x+1, y+1, _,_, tocolor(0,0,0), scale, font, alignx, aligny, unpack({...})); 
-return dxDrawText( text, x, y, _,_, color, scale, font, alignx, aligny, unpack({...})); 
-end 
 addEvent("onMapStarting", true)
 addEventHandler("onMapStarting", root, function(mapInfo)
     if Round.show then
         isHiding = true
         hideAnimationStartTime = getTickCount()
-        hideAnimationDuration = 1300
     end
 end)
+
 addEventHandler('onClientRender', root, Map.Render)
