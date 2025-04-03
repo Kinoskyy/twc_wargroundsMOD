@@ -6,6 +6,7 @@ local Round = {
     winner = nil,
     wintext = ""
 }
+
 local screen = Vector2(guiGetScreenSize())
 local scale = screen.x/1920
 local rectW, rectH = 600*scale, 600*scale
@@ -100,11 +101,11 @@ function Map.Render()
         dxDrawTextAligned('Name:', offsetx+10*scale, offsety+15*scale, _, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
         dxDrawTextAligned('Damage:', offsetx+350*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
         dxDrawTextAligned('Kills:', offsetx+450*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
-        dxDrawTextAligned('HP:', offsetx+560*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Health:', offsetx+560*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
 
         local dmgx = offsetx+350*scale - dxGetTextWidth('Damage:', 1, font_2)/2
         local killsx = offsetx+450*scale - dxGetTextWidth('Kills:', 1, font_2)/2
-        local hpx = offsetx+560*scale - dxGetTextWidth('HP:', 1, font_2)/2 
+        local hpx = offsetx+560*scale - dxGetTextWidth('Health:', 1, font_2)/2 
         offsety = offsety + 25*scale
 
         for k, v in pairs(Round.p or {}) do
@@ -112,7 +113,7 @@ function Map.Render()
                 dxDrawTextAligned(removeColorCodes(v.Name or ""), offsetx+10*scale, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(v.Damage or 0), dmgx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(v.Kills or 0), killsx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
-                dxDrawTextAligned(tostring(math.floor((v.Health or 0)+(v.Armor or 0))), hpx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
+                dxDrawTextAligned((v.Health or 0) <= 0 and "Dead" or tostring(math.floor((v.Health or 0)+(v.Armor or 0))), hpx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 offsety = offsety + 25*scale
             end
         end
@@ -141,11 +142,11 @@ function Map.Render()
         dxDrawTextAligned('Name:', offsetx2+10*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
         dxDrawTextAligned('Damage:', offsetx2+350*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
         dxDrawTextAligned('Kills:', offsetx2+450*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
-        dxDrawTextAligned('HP:', offsetx2+560*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Health:', offsetx2+560*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
 
         local dmgx2 = offsetx2+350*scale - dxGetTextWidth('Damage:', 1, font_2)/2
         local killsx2 = offsetx2+450*scale - dxGetTextWidth('Kills:', 1, font_2)/2
-        local hpx2 = offsetx2+560*scale - dxGetTextWidth('HP:', 1, font_2)/2
+        local hpx2 = offsetx2+560*scale - dxGetTextWidth('Health:', 1, font_2)/2
         offsety2 = offsety2 + 25*scale
         
         for k, v in pairs(Round.p or {}) do
@@ -153,7 +154,7 @@ function Map.Render()
                 dxDrawTextAligned(removeColorCodes(v.Name or ""), offsetx2+10*scale, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(v.Damage or 0), dmgx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(v.Kills or 0), killsx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
-                dxDrawTextAligned(tostring(math.floor((v.Health or 0)+(v.Armor or 0))), hpx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
+                dxDrawTextAligned((v.Health or 0) <= 0 and "Dead" or tostring(math.floor((v.Health or 0)+(v.Armor or 0))), hpx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 offsety2 = offsety2 + 25*scale
             end
         end
