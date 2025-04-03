@@ -6,7 +6,6 @@ local Round = {
     winner = nil,
     wintext = ""
 }
-
 local screen = Vector2(guiGetScreenSize())
 local scale = screen.x/1920
 local rectW, rectH = 600*scale, 600*scale
@@ -15,7 +14,7 @@ local font_2 = dxCreateFont('verdana.ttf', math.max(10, 12*scale)) or "default"
 local dxDrawText_ = dxDrawText
 local animationProgress = 0
 local animationDuration = 600
-local hideAnimationDuration = 400 
+local hideAnimationDuration = 1300
 local animationStartTime = nil
 local isHiding = false
 local hideAnimationStartTime = nil
@@ -89,31 +88,31 @@ function Map.Render()
         dxDrawRectangle(team1CurrentX, screen.y/2-rectH/2+rectH/7, rectW, rectH-rectH/7, tocolor(0, 0, 0, 100 * progress))
         dxDrawRectangle(team1CurrentX - 5*scale, screen.y/2-rectH/2, rectW+10*scale, rectH/7, tocolor(attackcolor[1], attackcolor[2], attackcolor[3], 150 * progress))
         
-        dxDrawTextAligned(attackname:upper(), team1CurrentX - 5*scale, screen.y/2-rectH/2, 
-                         _, _, tocolor(attackcolor[1], attackcolor[2], attackcolor[3], 255 * progress), 
-                         1, 'bankgothic', 'left', 'bottom', false, false, false, true, true)
-        dxDrawTextAligned(tostring(score), team1CurrentX + rectW + 5*scale, screen.y/2-rectH/2,
-                         _, _, tocolor(attackcolor[1], attackcolor[2], attackcolor[3], 255 * progress),
-                         1, 'bankgothic', 'right', 'bottom', false, false, false, true, true)
+        dxDrawTextAligned(attackname:upper(), team1CurrentX - 5*scale, screen.y/2-rectH/2, _, _, tocolor(attackcolor[1], attackcolor[2], attackcolor[3], 255 * progress), 1, 'bankgothic', 'left', 'bottom', false, false, false, true, true)
+        dxDrawTextAligned(tostring(score), team1CurrentX + rectW + 5*scale, screen.y/2-rectH/2,_, _, tocolor(attackcolor[1], attackcolor[2], attackcolor[3], 255 * progress),1, 'bankgothic', 'right', 'bottom', false, false, false, true, true)
 
-        if Round.winner ~= 'Draw' then dxDrawTextAligned(Round.winner == attackname and 'WINNER' or 'LOSER', team1CurrentX + rectW/2, screen.y/2-rectH/2+((rectH/7)/2),_, _, tocolor(255, 255, 255, 255 * progress),math.max(1, math.floor(3*scale)), 'bankgothic', 'center', 'center', false, false, false, true, false)
-        end
+		if Round.winner ~= 'Draw' then 
+    	dxDrawTextAligned(Round.winner == attackname and 'WINNER' or 'LOSER', team1CurrentX + rectW/2, screen.y/2-rectH/2+((rectH/7)/2),_, _, tocolor(255, 255, 255, 255 * progress),math.max(1, math.floor(3*scale)), 'bankgothic', 'center', 'center', false, false, false, true, false)
+		else
+    	dxDrawTextAligned('TIE', team1CurrentX + rectW/2, screen.y/2-rectH/2+((rectH/7)/2),_, _, tocolor(255, 255, 255, 255 * progress),math.max(1, math.floor(3*scale)), 'bankgothic', 'center', 'center', false, false, false, true, false)
+		end
         local offsetx, offsety = team1CurrentX, screen.y/2-rectH/2+rectH/7
-        dxDrawTextAligned('Name:', offsetx+10*scale, offsety+25*scale, _, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
-        dxDrawTextAligned('Kills:', offsetx+350*scale, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
-        dxDrawTextAligned('HP:', offsetx+450*scale, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
-        dxDrawTextAligned('Damage:', offsetx+560*scale, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Name:', offsetx+10*scale, offsety+15*scale, _, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Damage:', offsetx+350*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Kills:', offsetx+450*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('HP:', offsetx+560*scale, offsety+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
 
-        local killsx = offsetx+350*scale - dxGetTextWidth('Kills:', 1, font_2)/2
-        local hpx = offsetx+450*scale - dxGetTextWidth('HP:', 1, font_2)/2
-        local dmgx = offsetx+560*scale - dxGetTextWidth('Damage:', 1, font_2)/2 offsety = offsety + 25*scale
+        local dmgx = offsetx+350*scale - dxGetTextWidth('Damage:', 1, font_2)/2
+        local killsx = offsetx+450*scale - dxGetTextWidth('Kills:', 1, font_2)/2
+        local hpx = offsetx+560*scale - dxGetTextWidth('HP:', 1, font_2)/2 
+        offsety = offsety + 25*scale
 
         for k, v in pairs(Round.p or {}) do
             if v.Team == team then
                 dxDrawTextAligned(removeColorCodes(v.Name or ""), offsetx+10*scale, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
+                dxDrawTextAligned(tostring(v.Damage or 0), dmgx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(v.Kills or 0), killsx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(math.floor((v.Health or 0)+(v.Armor or 0))), hpx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
-                dxDrawTextAligned(tostring(v.Damage or 0), dmgx, offsety+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 offsety = offsety + 25*scale
             end
         end
@@ -133,26 +132,28 @@ function Map.Render()
         dxDrawTextAligned(defenseName:upper(), team2CurrentX + rectW + 10*scale, screen.y/2-rectH/2,_, _, tocolor(defenseColor[1], defenseColor[2], defenseColor[3], 255 * progress),1, 'bankgothic', 'right', 'bottom', false, false, false, true, true)
         dxDrawTextAligned(tostring(score2), team2CurrentX - 10*scale, screen.y/2-rectH/2,_, _, tocolor(defenseColor[1], defenseColor[2], defenseColor[3], 255 * progress),1, 'bankgothic', 'left', 'bottom', false, false, false, true, true)
 
-        if Round.winner ~= 'Draw' then
-            dxDrawTextAligned(Round.winner == defenseName and 'WINNER' or 'LOSER',team2CurrentX + rectW/2, screen.y/2-rectH/2+((rectH/7)/2),_, _, tocolor(255, 255, 255, 255 * progress),math.max(1, math.floor(3*scale)), 'bankgothic', 'center', 'center', false, false, false, true, false)
-        end
+		if Round.winner ~= 'Draw' then
+    	dxDrawTextAligned(Round.winner == defenseName and 'WINNER' or 'LOSER',team2CurrentX + rectW/2, screen.y/2-rectH/2+((rectH/7)/2),_, _, tocolor(255, 255, 255, 255 * progress),math.max(1, math.floor(3*scale)), 'bankgothic', 'center', 'center', false, false, false, true, false)
+		else
+    	dxDrawTextAligned('TIE', team2CurrentX + rectW/2, screen.y/2-rectH/2+((rectH/7)/2),_, _, tocolor(255, 255, 255, 255 * progress),math.max(1, math.floor(3*scale)), 'bankgothic', 'center', 'center', false, false, false, true, false)
+		end
         local offsetx2, offsety2 = team2CurrentX, screen.y/2-rectH/2+rectH/7
-        dxDrawTextAligned('Name:', offsetx2+10*scale, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
-        dxDrawTextAligned('Kills:', offsetx2+350*scale, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
-        dxDrawTextAligned('HP:', offsetx2+450*scale, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
-        dxDrawTextAligned('Damage:', offsetx2+560*scale, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Name:', offsetx2+10*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Damage:', offsetx2+350*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('Kills:', offsetx2+450*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
+        dxDrawTextAligned('HP:', offsetx2+560*scale, offsety2+15*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'right', 'top', false, false, false, true, false)
 
-        local killsx2 = offsetx2+350*scale - dxGetTextWidth('Kills:', 1, font_2)/2
-        local hpx2 = offsetx2+450*scale - dxGetTextWidth('HP:', 1, font_2)/2
-        local dmgx2 = offsetx2+560*scale - dxGetTextWidth('Damage:', 1, font_2)/2
+        local dmgx2 = offsetx2+350*scale - dxGetTextWidth('Damage:', 1, font_2)/2
+        local killsx2 = offsetx2+450*scale - dxGetTextWidth('Kills:', 1, font_2)/2
+        local hpx2 = offsetx2+560*scale - dxGetTextWidth('HP:', 1, font_2)/2
         offsety2 = offsety2 + 25*scale
         
         for k, v in pairs(Round.p or {}) do
             if v.Team == team2 then
                 dxDrawTextAligned(removeColorCodes(v.Name or ""), offsetx2+10*scale, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'left', 'top', false, false, false, true, false)
+                dxDrawTextAligned(tostring(v.Damage or 0), dmgx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(v.Kills or 0), killsx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 dxDrawTextAligned(tostring(math.floor((v.Health or 0)+(v.Armor or 0))), hpx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
-                dxDrawTextAligned(tostring(v.Damage or 0), dmgx2, offsety2+25*scale,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2,'center', 'top', false, false, false, true, false)
                 offsety2 = offsety2 + 25*scale
             end
         end
@@ -167,7 +168,7 @@ function Map.Render()
         local statsCurrentY = isHiding and (statsFinalY + (statsInitialY - statsFinalY) * (1-progress))or (statsInitialY + (statsFinalY - statsInitialY) * progress)
         local offsetx3 = (25*scale)+screen.x/2-((rectW+20*scale)*2)/2
         dxDrawRectangle(offsetx3, statsCurrentY, ((rectW)*2), rectH/6, tocolor(0, 0, 0, 50 * progress))
-
+        
         local function drawStatText(text, x, align)
             dxDrawText(text:gsub('#%x%x%x%x%x%x', ''), x+1, statsCurrentY+(rectH/6)/2+1,_, _, tocolor(0, 0, 0, 255 * progress), 1, font_2, align, 'center', false, false, false, true)
             dxDrawText(text, x, statsCurrentY+(rectH/6)/2,_, _, tocolor(255, 255, 255, 255 * progress), 1, font_2, align, 'center', false, false, false, true) end
@@ -183,7 +184,7 @@ function Map.Render()
         end
     end
 end
-
+        
 function getMostDamage(round)
     if not round then return "N/A", "#FFFFFF" end
     local player, damage, team = nil, -1, nil
@@ -268,7 +269,7 @@ addEventHandler("onMapStarting", root, function(mapInfo)
     if Round.show then
         isHiding = true
         hideAnimationStartTime = getTickCount()
-        hideAnimationDuration = 400
+        hideAnimationDuration = 1300
     end
 end)
 addEventHandler('onClientRender', root, Map.Render)
